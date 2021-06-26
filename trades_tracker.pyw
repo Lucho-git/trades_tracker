@@ -1,5 +1,5 @@
 import websocket, json
-from trade_classes.pyw import Trade, FTrade, MFTrade 
+from trade_classes import Trade, FTrade, MFTrade 
 
 bnbtrade = FTrade('bnbusdt', 390, 400, 410, 'ongoing', 'Midnight', '10', 'short', 10, 'isolation')
 bnbtrade.trade_status()
