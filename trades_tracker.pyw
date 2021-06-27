@@ -28,30 +28,28 @@ def on_message(ws, message):
     json_message = json.loads(message)
     candle = json_message['k']
     is_candle_closed = candle['x']
-    close = candle['c']
-    high = candle['h']
-    low = candle['l']
-    vol = candle['v']
-    symbol = candle['s']
-
-    #Forcing global variable due to google colab scoping issues
-    #print(glob[0])
+    
     if glob[1] == False:
       if glob[0] > 0:
         #print("reducing...from", glob[0], 'to', str(glob[0]-1))
         glob[0] -= 1
-        glob[1] = True
-    elif glob[1] == True:
-        pass
-    
-    #Get trade data, related to current stream
-    for t in active_trades:
-      if t.pair.upper() == symbol:
-        trade = t
-      
+        glob[1] = True    
+
     #Every 1 Minute, or first runthrough
-    #print(glob[1])
     if is_candle_closed or glob[1]: 
+      #get second/minute candle, stream data    
+      close = candle['c']
+      high = candle['h']
+      low = candle['l']
+      vol = candle['v']
+      symbol = candle['s']
+
+      #Get trade data, related to current stream
+      for t in active_trades:
+        if t.pair.upper() == symbol:
+          trade = t
+      
+    #print(glob[1])
       glob[1] = False
       print('\n______________________________')
       print(symbol,'Status:', trade.status)
@@ -104,7 +102,6 @@ def on_message(ws, message):
         if close < float(trade.entryprice):
           #print('\033[91m' + "- ", percentage,"%" + '\033[0m')
           print("- ", percentage,"%")
-
         else:
           print("+ ", percentage,"%")
 
@@ -147,6 +144,8 @@ def futures_market_order():
           completed_trades.append(t)
           active_trades.remove(t)
           removals = True
+     #Check for new additions 
+
    
   print("closed")
 futures_market_order()
